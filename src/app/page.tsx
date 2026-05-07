@@ -2,8 +2,6 @@ import Link from "next/link";
 import PageBanner from "@/components/PageBanner";
 import { getCategorized, treatments } from "@/data/treatments";
 
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
-
 export default function Home() {
   const categorized = getCategorized();
   const totalCount = treatments.length;
@@ -71,7 +69,7 @@ export default function Home() {
                 {cat.items.map((t) => (
                   <Link
                     key={t.slug}
-                    href={`${BASE_PATH}/${t.slug}/`}
+                    href={`/${t.slug}/`}
                     className="block h-full"
                   >
                     <div
