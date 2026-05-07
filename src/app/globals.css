@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* ── Primary — 룬피부과 브랜드 네이비 ── */
+  --color-primary-navy: #16374B;
+  --color-primary-slate: #435165;
+  --color-accent-gold: #281203;          /* 딥 브라운 */
+  --color-accent-beige: #D4CFC4;         /* 웜 베이지 */
+
+  /* ── Background ── */
+  --color-bg-light: #F7F6F2;
+  --color-bg-warm: #EFECE8;
+  --color-bg-dark: #16374B;
+
+  /* ── Text ── */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #435165;
+  --color-text-muted: #8A8A8A;
+
+  /* ── Border ── */
+  --color-border-light: #E5E1D9;
+
+  /* ── Font ── */
+  --font-sans: "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Noto Serif KR", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  line-break: auto;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #16374b;
+  border-radius: 2px;
+}
+
+::selection {
+  background: #16374b;
+  color: white;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
