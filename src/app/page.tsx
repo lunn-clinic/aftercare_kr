@@ -1,104 +1,65 @@
 import Link from "next/link";
-import PageBanner from "@/components/PageBanner";
-import { getCategorized, treatments } from "@/data/treatments";
+import { treatments } from "@/data/treatments";
 
 export default function Home() {
-  const categorized = getCategorized();
-  const totalCount = treatments.length;
-
   return (
-    <>
-      <PageBanner
-        title="시술 후 주의사항"
-        breadcrumb={[{ label: "Aftercare Notes" }]}
-      />
+    <main className="min-h-screen bg-bg-warm flex items-start justify-center px-4 py-6 sm:py-10">
+      <div className="w-full max-w-[640px] bg-white rounded-2xl border border-border-light shadow-[0_4px_24px_rgba(22,55,75,0.04)] p-5 sm:p-8">
+        {/* 헤더 — 피부과 전문의 마크 + 병원명 */}
+        <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-3">
+          <div
+            className="flex-shrink-0 inline-flex flex-col items-center justify-center bg-[#C53030] text-white rounded-md leading-[1.1] font-extrabold tracking-tight px-2.5 py-2 sm:px-3 sm:py-2.5 text-[11px] sm:text-[13px]"
+          >
+            <span>피부과</span>
+            <span>전문의</span>
+          </div>
+          <h1
+            className="text-text-secondary text-2xl sm:text-4xl font-bold tracking-tight"
+            style={{ fontFamily: '"Noto Serif KR", serif', fontWeight: 400 }}
+          >
+            LUNN 피부과
+          </h1>
+        </div>
 
-      {/* 인트로 */}
-      <section className="py-20 lg:py-28 bg-white">
-        <div className="max-w-[860px] mx-auto px-6 text-center">
-          <p className="text-[10px] tracking-[0.4em] font-bold mb-5 text-primary-navy">
-            AFTERCARE · NOTES
-          </p>
-          <div className="w-10 h-px mx-auto mb-8 bg-primary-navy" />
-          <h2 className="text-primary-navy text-3xl lg:text-4xl font-extrabold leading-tight mb-6 whitespace-pre-line">
-            받으신 시술별 주의사항을{"\n"}한 곳에서 확인하세요
-          </h2>
-          <p className="text-text-secondary text-[15px] leading-[1.9]">
-            {totalCount}개 시술
-          </p>
+        <h2 className="text-text-muted text-base sm:text-xl font-medium tracking-tight mb-5 sm:mb-7 pl-[60px] sm:pl-[76px]">
+          시술 후 주의사항
+        </h2>
 
-          <div className="flex flex-wrap justify-center gap-2 mt-10">
-            {categorized.map((c) => (
-              <a
-                key={c.key}
-                href={`#cat-${c.key}`}
-                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border-light text-primary-navy text-xs font-semibold hover:border-primary-navy transition-all"
+        {/* 시술 그리드 — 2열 고정, 모바일에서도 2열 유지 */}
+        <div className="grid grid-cols-2 border-t border-l border-border-light">
+          {treatments.map((t) => (
+            <Link
+              key={t.slug}
+              href={`/${t.slug}/`}
+              className="group flex items-center justify-center text-center border-b border-r border-border-light px-2 py-5 sm:px-4 sm:py-7 min-h-[80px] sm:min-h-[100px] transition-colors hover:bg-primary-navy/[0.03] active:bg-primary-navy/[0.06]"
+            >
+              <span
+                className="text-text-primary text-[13px] sm:text-base leading-[1.45] font-medium break-keep"
+                style={{ wordBreak: "keep-all" }}
               >
-                <span className="w-2 h-2 rounded-full bg-primary-navy" />
-                {c.name}
-                <span className="text-text-muted">{c.items.length}</span>
-              </a>
-            ))}
+                {t.name}
+              </span>
+            </Link>
+          ))}
+
+          {/* 마지막 칸 — 병원 안내/CTA 자리 */}
+          <div className="flex flex-col items-center justify-center text-center border-b border-r border-border-light px-2 py-5 sm:px-4 sm:py-7 min-h-[80px] sm:min-h-[100px] bg-primary-navy/[0.02]">
+            <p className="text-text-muted text-[10px] sm:text-xs tracking-[0.2em] font-bold mb-1">
+              FOR OUR PATIENTS
+            </p>
+            <p className="text-text-secondary text-[12px] sm:text-sm leading-tight">
+              박형권 원장
+              <br />
+              진료 안내
+            </p>
           </div>
         </div>
-      </section>
 
-      {/* 카테고리별 그룹 */}
-      <section className="pb-16 lg:pb-24 bg-bg-warm">
-        <div className="max-w-[1140px] mx-auto px-6 py-16 lg:py-24 space-y-20 lg:space-y-28">
-          {categorized.map((cat, catIdx) => (
-            <div key={cat.key} id={`cat-${cat.key}`} className="scroll-mt-24">
-              <div className="flex items-end justify-between gap-6 mb-8 flex-wrap">
-                <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.25em] text-white bg-primary-navy">
-                      {String(catIdx + 1).padStart(2, "0")} · CATEGORY
-                    </span>
-                    <span className="text-text-muted text-xs">
-                      {cat.items.length}개 시술
-                    </span>
-                  </div>
-                  <h3 className="text-2xl lg:text-[2rem] font-extrabold leading-tight mb-2 text-primary-navy">
-                    {cat.name}
-                  </h3>
-                </div>
-                <div className="h-px flex-1 mb-4 bg-primary-navy/20" />
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 lg:p-8 rounded-3xl bg-primary-navy/[0.03]">
-                {cat.items.map((t) => (
-                  <Link
-                    key={t.slug}
-                    href={`/${t.slug}/`}
-                    className="block h-full"
-                  >
-                    <div
-                      className="relative h-full bg-white rounded-2xl border-l-[3px] border border-border-light p-6 lg:p-7 transition-all hover:shadow-[0_10px_40px_rgba(22,55,75,0.08)] hover:-translate-y-0.5"
-                      style={{ borderLeftColor: "#16374B" }}
-                    >
-                      <p
-                        className="text-[10px] tracking-[0.25em] font-bold mb-3"
-                        style={{ color: "#16374B" }}
-                      >
-                        AFTERCARE
-                      </p>
-                      <h4 className="text-primary-navy text-xl font-extrabold mb-2.5 leading-tight">
-                        {t.name}
-                      </h4>
-                      <p className="text-text-secondary text-[13px] leading-relaxed mb-5">
-                        주의사항 {t.notes.length}건
-                      </p>
-                      <p className="text-xs font-semibold tracking-wide" style={{ color: "#16374B" }}>
-                        주의사항 보기 →
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    </>
+        {/* 하단 안내 */}
+        <p className="text-text-muted text-[10px] sm:text-xs leading-relaxed text-center mt-4 sm:mt-6">
+          시술별 상세 안내를 보시려면 항목을 선택해 주세요
+        </p>
+      </div>
+    </main>
   );
 }
