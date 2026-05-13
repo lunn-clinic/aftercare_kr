@@ -9,7 +9,105 @@ import {
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-const NAVY = "#253749";
+const NAVY = "#00394e";
+const NUMBER_COLOR = "#7C9CA7";
+const NOTE_TEXT_COLOR = "#E3E3E3";
+
+// 시안 .text-wrapper-3 — 부제 5-stop 그라데이션
+const SUBTITLE_GRAD: React.CSSProperties = {
+  background:
+    "linear-gradient(121deg, rgba(215,215,215,1) 0%, rgba(227,227,227,1) 62%, rgba(255,255,255,1) 75%, rgba(227,227,227,1) 88%, rgba(215,215,215,1) 100%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  color: "transparent",
+};
+
+const DIAMOND_COLOR = "#A2C5D2";
+
+function Diamond() {
+  return (
+    <span
+      aria-hidden="true"
+      className="relative inline-block flex-shrink-0"
+      style={{ width: "10px", height: "10px" }}
+    >
+      <span
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45"
+        style={{
+          width: "7px",
+          height: "7px",
+          backgroundColor: DIAMOND_COLOR,
+          boxShadow: "0 0 3px rgba(255,255,255,0.85)",
+        }}
+      />
+      <span
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45"
+        style={{
+          width: "3px",
+          height: "3px",
+          backgroundColor: "#E3E3E3",
+        }}
+      />
+    </span>
+  );
+}
+
+function DashWithDiamond({ side }: { side: "left" | "right" }) {
+  const dash = (
+    <span
+      aria-hidden="true"
+      className="block"
+      style={{
+        width: "71.38px",
+        height: "0.7px",
+        backgroundColor: "#A4A4A4",
+      }}
+    />
+  );
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex items-center flex-shrink-0"
+      style={{ width: "77px", height: "12px" }}
+    >
+      {side === "left" ? (
+        <>
+          <Diamond />
+          {dash}
+        </>
+      ) : (
+        <>
+          {dash}
+          <Diamond />
+        </>
+      )}
+    </span>
+  );
+}
+
+// 시안 .line + .group-4: 351×1px 가로선 + 좌우 끝 3×3 흰 동그라미
+function NoteDivider() {
+  return (
+    <div className="relative w-full h-[5px] my-0">
+      <div
+        aria-hidden="true"
+        className="absolute top-1/2 -translate-y-1/2 left-0 right-0"
+        style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.25)" }}
+      />
+      <span
+        aria-hidden="true"
+        className="absolute top-1/2 -translate-y-1/2 left-0 -translate-x-1/2 rounded-full"
+        style={{ width: "3px", height: "3px", backgroundColor: "#FFFFFF" }}
+      />
+      <span
+        aria-hidden="true"
+        className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 rounded-full"
+        style={{ width: "3px", height: "3px", backgroundColor: "#FFFFFF" }}
+      />
+    </div>
+  );
+}
 
 export function generateStaticParams() {
   return treatments.map((t) => ({ slug: t.slug }));
@@ -37,115 +135,150 @@ export default async function TreatmentDetail({
   const t = getTreatment(slug);
   if (!t) notFound();
 
-  const { main, sub } = splitName(t.name);
+  const { main } = splitName(t.name);
 
   return (
     <main
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        backgroundImage: `url('${BASE_PATH}/background-detail.png?v=2')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-        color: NAVY,
-      }}
+      className="min-h-screen relative overflow-hidden flex flex-col"
+      style={{ backgroundColor: NAVY }}
     >
-      <div className="relative w-full max-w-[720px] mx-auto px-4 pt-10 pb-10 sm:pt-14 sm:pb-14">
-        {/* 좌측 상단 — 전체 시술로 돌아가기 (절대 배치, 헤더 위치에 영향 X) */}
+      {/* 배경 오버레이 — 시안 .bg (상하 웨이브) */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 flex justify-center pointer-events-none"
+      >
+        <div
+          className="w-full max-w-[410px] h-full"
+          style={{
+            backgroundImage: `url('${BASE_PATH}/bg-overlay-detail.png')`,
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        />
+      </div>
+
+      <div className="relative w-full max-w-[402px] mx-auto px-6 pt-[88px] pb-12 flex-1 flex flex-col">
+        {/* 좌측 상단 — 전체 시술로 돌아가기 */}
         <Link
           href="/"
-          className="absolute top-4 left-4 sm:top-6 sm:left-6 inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium transition-colors hover:opacity-80 z-10"
-          style={{ color: `${NAVY}cc` }}
+          className="absolute top-4 left-4 sm:top-6 sm:left-6 inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium transition-colors text-white/70 hover:text-white z-10"
         >
           <span className="text-base">←</span>
           전체 시술
         </Link>
 
-        {/* 헤더 — 1페이지와 동일 (마크 + LUNN 네이비 로고 + 시술 후 주의사항) */}
+        {/* 헤더 — 시안 .div (피부과 전문의 + LUNN) */}
         <header className="flex flex-col items-center text-center">
-          <div className="flex items-center justify-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`${BASE_PATH}/specialist-mark.png`}
               alt="피부과 전문의"
-              className="w-11 h-11 sm:w-14 sm:h-14 drop-shadow-[0_4px_10px_rgba(197,48,48,0.2)]"
+              className="h-[44px] w-[44px] drop-shadow-[0_2px_8px_rgba(215,29,32,0.35)]"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={`${BASE_PATH}/lunn-logo-navy.png?v=2`}
+              src={`${BASE_PATH}/lunn-wordmark.svg`}
               alt="LUNN"
-              className="h-16 sm:h-20 w-auto -translate-y-1 sm:-translate-y-1.5"
+              className="h-[52px] w-auto"
             />
           </div>
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mt-3">
-            <span className="block w-10 sm:w-14 h-px" style={{ backgroundColor: `${NAVY}66` }} />
-            <p className="text-base sm:text-lg tracking-tight font-medium" style={{ color: NAVY }}>
+
+          {/* 부제 — 시안 group-2/group-3 (다이아몬드 + dash) + text-wrapper-3 */}
+          <div className="flex items-center justify-center mt-[26px]">
+            <DashWithDiamond side="left" />
+            <p
+              className="text-[19px] font-semibold leading-[22.3px] whitespace-nowrap mx-[5px]"
+              style={{ letterSpacing: "-0.57px", ...SUBTITLE_GRAD }}
+            >
               시술 후 주의사항
             </p>
-            <span className="block w-10 sm:w-14 h-px" style={{ backgroundColor: `${NAVY}66` }} />
+            <DashWithDiamond side="right" />
           </div>
 
-          {/* 시술명 — 1페이지 그리드와 동일한 폰트/스타일 */}
-          <div className="mt-7 sm:mt-9">
-            <p
-              className="text-[1.5rem] sm:text-[1.875rem] font-bold tracking-tight leading-[1.25]"
-              style={{ wordBreak: "keep-all", color: NAVY }}
+          {/* 시술명 흰 알약 — 시안 .frame-2: 흰색 배경, 네이비 텍스트 */}
+          <div
+            className="inline-flex items-center justify-center mt-[34px] px-5 py-[3px] rounded-[3px]"
+            style={{ backgroundColor: "#ffffff" }}
+          >
+            <span
+              className="text-[14px] font-semibold leading-[19.1px] whitespace-nowrap"
+              style={{
+                letterSpacing: "-0.42px",
+                color: NAVY,
+                fontWeight: 600,
+              }}
             >
               {main}
-            </p>
-            {sub ? (
-              <p
-                className="text-sm sm:text-base font-medium mt-1.5"
-                style={{ wordBreak: "keep-all", color: `${NAVY}cc` }}
-              >
-                {sub}
-              </p>
-            ) : null}
+            </span>
           </div>
         </header>
 
-        {/* 주의사항 — 표 형식 (헤어라인만, 박스 없음) */}
-        <ol className="mt-8 sm:mt-10">
-          {t.notes.map((note, idx) => (
-            <li
-              key={idx}
-              className="relative flex items-start gap-4 sm:gap-5 px-2 py-4 sm:px-3 sm:py-5"
-              style={
-                idx > 0
-                  ? { borderTop: `1px solid ${NAVY}33` }
-                  : undefined
-              }
-            >
-              <span
-                className="flex-shrink-0 text-[18px] sm:text-[22px] leading-none italic tracking-[0.04em] pt-[2px] sm:pt-[3px]"
-                style={{
-                  fontFamily: '"Noto Serif KR", serif',
-                  fontWeight: 400,
-                  color: `${NAVY}b3`,
-                }}
-                aria-hidden="true"
-              >
-                {String(idx + 1).padStart(2, "0")}
-              </span>
-              <p
-                className="text-[13px] sm:text-[15px] leading-[1.7] flex-1 min-w-0 font-semibold"
-                style={{ wordBreak: "keep-all", color: NAVY }}
-              >
-                {note}
-              </p>
-            </li>
-          ))}
-        </ol>
+        {/* 시안 .frame-3: 노트목록 + 푸터 라인 + 푸터 텍스트, gap-30 외부 간격 */}
+        <div className="mt-[30px] w-full flex flex-col items-center gap-[30px]">
+          {/* 시안 .frame-4: 고정 높이 582.81 + space-between으로 노트와 분리선 펼침 */}
+          <div
+            className="w-full flex flex-col items-stretch"
+            style={{
+              minHeight: "582.81px",
+              justifyContent: "space-between",
+            }}
+          >
+            {t.notes.map((note, idx) => (
+              <div key={idx} className="contents">
+                <div className="flex items-start gap-[9px]">
+                  <span
+                    aria-hidden="true"
+                    className="flex-shrink-0"
+                    style={{
+                      fontFamily:
+                        '"Newsreader", "Noto Serif KR", Georgia, serif',
+                      fontWeight: 300,
+                      fontSize: "25px",
+                      lineHeight: "35px",
+                      letterSpacing: "-1.75px",
+                      color: NUMBER_COLOR,
+                    }}
+                  >
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                  <p
+                    className="text-[14px] font-medium leading-[19.1px] flex-1 pt-[8px]"
+                    style={{
+                      letterSpacing: "-0.42px",
+                      wordBreak: "keep-all",
+                      color: NOTE_TEXT_COLOR,
+                    }}
+                  >
+                    {note}
+                  </p>
+                </div>
+                {idx < t.notes.length - 1 ? <NoteDivider /> : null}
+              </div>
+            ))}
+          </div>
 
-        {/* 하단 안내 + 뒤로가기 */}
-        <div className="text-center mt-10 sm:mt-12">
-          <div className="h-px w-12 mx-auto mb-5" style={{ backgroundColor: `${NAVY}55` }} />
-          <p className="text-[11px] sm:text-xs leading-[1.85] italic px-4" style={{ color: `${NAVY}b3` }}>
+        {/* 푸터 — 짧은 hairline + 안내문 (frame-3 children, gap-30 적용됨) */}
+        <div className="flex flex-col items-center text-center">
+          <span
+            aria-hidden="true"
+            className="block"
+            style={{
+              width: "40px",
+              height: "1px",
+              backgroundColor: NUMBER_COLOR,
+            }}
+          />
+          <p
+            className="mt-4 text-[10px] font-medium leading-[15px]"
+            style={{ letterSpacing: "-0.3px", color: NUMBER_COLOR }}
+          >
             본 안내는 룬피부과의원에서 시술받으신 환자분의 회복을 돕기 위한 일반 안내입니다.
             <br className="hidden sm:inline" />
             의료 상담이 필요하신 경우 반드시 내원하여 진료 받으시길 권장드립니다.
           </p>
+        </div>
         </div>
       </div>
     </main>

@@ -1,108 +1,276 @@
 import Link from "next/link";
-import { splitName, treatments } from "@/data/treatments";
+import { splitName, treatments, type Treatment } from "@/data/treatments";
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-// 배경 위 가독성용 부드러운 글로우 (네온 느낌)
-const TEXT_OUTLINE = {
-  textShadow:
-    "0 0 6px rgba(0,0,0,0.55), 0 0 14px rgba(0,0,0,0.45), 0 0 22px rgba(0,0,0,0.35)",
+const NAVY = "#00394e";
+
+const SILVER_GRAD_SUBTITLE: React.CSSProperties = {
+  background:
+    "linear-gradient(180deg, rgba(227,227,227,1) 0%, rgba(164,164,164,1) 100%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  color: "transparent",
 };
 
+const SILVER_GRAD_LABEL: React.CSSProperties = {
+  background:
+    "linear-gradient(180deg, rgba(164,164,164,1) 0%, rgba(227,227,227,1) 100%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  color: "transparent",
+};
+
+const LINE_COLOR = "#547A88";
+const DOT_COLOR = "#FFFFFF";
+const DOT_SIZE = 3;
+const DIAMOND_COLOR = "#A2C5D2";
+
+// 시안 group/group-2 (77×12): dash 71.38px + 다이아몬드 ~8px 묶음 (고정폭)
+function DashWithDiamond({ side }: { side: "left" | "right" }) {
+  const dash = (
+    <span
+      aria-hidden="true"
+      className="block"
+      style={{
+        width: "71.38px",
+        height: "0.7px",
+        backgroundColor: "#A4A4A4",
+      }}
+    />
+  );
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex items-center flex-shrink-0"
+      style={{ width: "77px", height: "12px" }}
+    >
+      {side === "left" ? (
+        <>
+          <Diamond />
+          {dash}
+        </>
+      ) : (
+        <>
+          {dash}
+          <Diamond />
+        </>
+      )}
+    </span>
+  );
+}
+
+// 두 겹 다이아몬드 — 외곽 light-blue + 내부 흰 하이라이트
+function Diamond() {
+  return (
+    <span
+      aria-hidden="true"
+      className="relative inline-block flex-shrink-0"
+      style={{ width: "10px", height: "10px" }}
+    >
+      <span
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45"
+        style={{
+          width: "7px",
+          height: "7px",
+          backgroundColor: DIAMOND_COLOR,
+          boxShadow: "0 0 3px rgba(255,255,255,0.85)",
+        }}
+      />
+      <span
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45"
+        style={{
+          width: "3px",
+          height: "3px",
+          backgroundColor: "#E3E3E3",
+        }}
+      />
+    </span>
+  );
+}
+
+function Dot({ className = "" }: { className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`absolute top-1/2 -translate-y-1/2 rounded-full z-10 ${className}`}
+      style={{
+        width: `${DOT_SIZE}px`,
+        height: `${DOT_SIZE}px`,
+        backgroundColor: DOT_COLOR,
+      }}
+    />
+  );
+}
+
+// 시안 분리선: 0.5px 가로선 + 좌우 끝 3px 동그라미 (중앙 dot 없음)
+function HLine() {
+  return (
+    <div className="relative w-full h-[5px] my-0">
+      <div
+        aria-hidden="true"
+        className="absolute top-1/2 -translate-y-1/2 left-0 right-0"
+        style={{ height: "0.5px", backgroundColor: LINE_COLOR }}
+      />
+      <Dot className="left-0 -translate-x-1/2" />
+      <Dot className="right-0 translate-x-1/2" />
+    </div>
+  );
+}
+
+// 2열 셀 행 (내부 세로선 포함)
+function Row({ left, right }: { left: Treatment; right: Treatment }) {
+  return (
+    <div className="relative grid grid-cols-2">
+      <Cell t={left} />
+      <Cell t={right} />
+      {/* 세로 0.5px hairline */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2"
+        style={{ width: "0.5px", backgroundColor: LINE_COLOR }}
+      />
+    </div>
+  );
+}
+
+function formatBracket(sub: string | null): string | null {
+  if (!sub) return null;
+  const inner = sub.replace(/^[\(\[]\s*|\s*[\)\]]$/g, "");
+  return `[ ${inner} ]`;
+}
+
+function Cell({ t }: { t: Treatment }) {
+  const { main, sub } = splitName(t.name);
+  const brackets = formatBracket(sub);
+  return (
+    <Link
+      href={`/${t.slug}/`}
+      className="relative flex flex-col items-center justify-center text-center px-3 py-5 min-h-[119px] hover:bg-white/[0.04] active:bg-white/[0.08] transition-colors"
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`${BASE_PATH}/icons/${t.slug}.svg`}
+        alt=""
+        aria-hidden="true"
+        className="h-[47px] w-auto mb-2"
+      />
+      <p
+        className="text-[14px] font-bold leading-[19.1px]"
+        style={{
+          letterSpacing: "-0.42px",
+          wordBreak: "keep-all",
+          ...SILVER_GRAD_LABEL,
+        }}
+      >
+        {main}
+      </p>
+      {brackets ? (
+        <p
+          className="text-[10px] font-medium leading-[19.1px] mt-0.5"
+          style={{
+            letterSpacing: "-0.3px",
+            wordBreak: "keep-all",
+            ...SILVER_GRAD_LABEL,
+          }}
+        >
+          {brackets}
+        </p>
+      ) : null}
+    </Link>
+  );
+}
+
 export default function Home() {
+  const grid = treatments.filter((t) => t.slug !== "skincare");
+  const skincare = treatments.find((t) => t.slug === "skincare");
+  const rows: Array<[Treatment, Treatment]> = [];
+  for (let i = 0; i < grid.length; i += 2) {
+    rows.push([grid[i], grid[i + 1]]);
+  }
+
   return (
     <main
       className="min-h-screen relative overflow-hidden flex flex-col"
-      style={{
-        backgroundImage: `url('${BASE_PATH}/background.png')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-      }}
+      style={{ backgroundColor: NAVY }}
     >
+      {/* 배경 오버레이 — 페이지 전체에 stretch (상하 웨이브가 페이지 상하단에 자동 anchor) */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 flex justify-center pointer-events-none"
+      >
+        <div
+          className="w-full max-w-[410px] h-full"
+          style={{
+            backgroundImage: `url('${BASE_PATH}/bg-overlay.png')`,
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        />
+      </div>
+      {/* 상단 그라데이션 페이드 */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 left-0 right-0 h-[187px] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(2,59,80,0.8) 0%, rgba(2,59,80,0) 100%)",
+        }}
+      />
 
-      <div className="relative w-full max-w-[760px] mx-auto px-4 pt-10 pb-8 sm:pt-14 sm:pb-12 flex-1 flex flex-col">
-        {/* 헤더 — 마크와 타이틀 가로 배치, 중앙 정렬 */}
+      <div className="relative w-full max-w-[402px] mx-auto px-6 pt-[88px] pb-12 flex-1 flex flex-col">
+        {/* 헤더 */}
         <header className="flex flex-col items-center text-center">
-          <div className="flex items-center justify-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`${BASE_PATH}/specialist-mark.png`}
               alt="피부과 전문의"
-              className="w-11 h-11 sm:w-14 sm:h-14 drop-shadow-[0_4px_10px_rgba(197,48,48,0.2)]"
+              className="h-[44px] w-[44px] drop-shadow-[0_2px_8px_rgba(215,29,32,0.35)]"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={`${BASE_PATH}/lunn-logo.png`}
+              src={`${BASE_PATH}/lunn-wordmark.svg`}
               alt="LUNN"
-              className="h-16 sm:h-20 w-auto -translate-y-1 sm:-translate-y-1.5"
+              className="h-[52px] w-auto"
             />
           </div>
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mt-3">
-            <span className="block w-10 sm:w-14 h-px bg-white/40" />
+
+          {/* 부제 — 시안 group/group-2 고정폭 77px dash+다이아몬드 양옆 + 5px 간격 + 텍스트 */}
+          <div className="flex items-center justify-center mt-[42px]">
+            <DashWithDiamond side="left" />
             <p
-              className="text-white text-base sm:text-lg tracking-tight font-medium"
-              style={TEXT_OUTLINE}
+              className="text-[19px] font-semibold leading-[22.3px] whitespace-nowrap mx-[5px]"
+              style={{ letterSpacing: "-0.57px", ...SILVER_GRAD_SUBTITLE }}
             >
               시술 후 주의사항
             </p>
-            <span className="block w-10 sm:w-14 h-px bg-white/40" />
+            <DashWithDiamond side="right" />
           </div>
         </header>
 
-        {/* 헤더와 그리드 사이 빈 공간 — 그리드를 중간 위치로 */}
-        <div className="flex-1 min-h-[20px] sm:min-h-[40px]" />
+        {/* 그리드 — 명시적 가로 분리선 + 행 단위 구성 */}
+        <div className="mt-[20px]">
+          <HLine />
+          {rows.map((row, i) => (
+            <div key={i}>
+              <Row left={row[0]} right={row[1]} />
+              <HLine />
+            </div>
+          ))}
 
-        {/* 시술 그리드 — 표 형식, 바깥 테두리 없음 (셀 사이만 hairline) */}
-        <div className="grid grid-cols-2">
-          {treatments.map((t, idx) => {
-            const { main, sub } = splitName(t.name);
-            const isRightCol = idx % 2 === 1;
-            const isFirstRow = idx < 2;
-            return (
-              <Link
-                key={t.slug}
-                href={`/${t.slug}/`}
-                className={`group relative flex flex-col items-center justify-center text-center px-3 py-6 sm:px-5 sm:py-8 min-h-[88px] sm:min-h-[110px] hover:bg-white/[0.06] active:bg-white/[0.10] transition-colors ${
-                  !isRightCol ? "border-r border-white/25" : ""
-                } ${!isFirstRow ? "border-t border-white/25" : ""}`}
-              >
-                <span
-                  className="text-white text-[15px] sm:text-lg font-bold leading-[1.25]"
-                  style={{ wordBreak: "keep-all", ...TEXT_OUTLINE }}
-                >
-                  {main}
-                </span>
-                {sub ? (
-                  <span
-                    className="text-white text-[11px] sm:text-[12px] leading-[1.4] mt-1 font-medium"
-                    style={{
-                      wordBreak: "keep-all",
-                      textShadow:
-                        "0 0 5px rgba(0,0,0,0.7), 0 0 12px rgba(0,0,0,0.55), 0 0 20px rgba(0,0,0,0.4)",
-                    }}
-                  >
-                    {sub}
-                  </span>
-                ) : null}
-              </Link>
-            );
-          })}
-
-          {/* LUNN 심볼 — 마지막 칸 */}
-          <div className="relative flex items-center justify-center px-3 py-6 sm:px-5 sm:py-8 min-h-[88px] sm:min-h-[110px] border-t border-white/25">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${BASE_PATH}/lunn-symbol.png`}
-              alt="LUNN"
-              className="h-16 sm:h-24 w-auto"
-            />
-          </div>
+          {/* 피부관리 — 가운데 정렬 단일 셀 (시안 좌표 left=112, width=178: 약 1/2 폭 가운데 정렬) */}
+          {skincare ? (
+            <div className="flex justify-center">
+              <div className="w-1/2">
+                <Cell t={skincare} />
+              </div>
+            </div>
+          ) : null}
         </div>
-
-        {/* 그리드 아래 여백 — 그리드를 화면 중간 정도로 띄움 */}
-        <div className="flex-1 min-h-[20px] sm:min-h-[40px]" />
       </div>
     </main>
   );

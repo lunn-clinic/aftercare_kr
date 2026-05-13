@@ -25,6 +25,10 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&display=swap"
         />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400&display=swap"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-white text-text-primary">
         {children}
