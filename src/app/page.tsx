@@ -196,18 +196,18 @@ export default function Home() {
       className="min-h-screen relative overflow-hidden flex flex-col"
       style={{ backgroundColor: NAVY }}
     >
-      {/* 배경 오버레이 — 페이지 전체에 stretch (상하 웨이브가 페이지 상하단에 자동 anchor) */}
+      {/* 배경 오버레이 — 상단 웨이브(top 고정) + 하단 웨이브(bottom 고정) */}
       <div
         aria-hidden="true"
         className="absolute inset-0 flex justify-center pointer-events-none"
       >
         <div
-          className="w-full max-w-[410px] h-full"
+          className="w-full max-w-[425px] h-full"
           style={{
-            backgroundImage: `url('${BASE_PATH}/bg-overlay.png')`,
-            backgroundSize: "100% 100%",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
+            backgroundImage: `url('${BASE_PATH}/bg-detail-top.png'), url('${BASE_PATH}/bg-detail-bottom.png')`,
+            backgroundSize: "100% auto, 100% auto",
+            backgroundRepeat: "no-repeat, no-repeat",
+            backgroundPosition: "top center, bottom center",
           }}
         />
       </div>

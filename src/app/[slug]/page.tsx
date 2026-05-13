@@ -142,18 +142,18 @@ export default async function TreatmentDetail({
       className="min-h-screen relative overflow-hidden flex flex-col"
       style={{ backgroundColor: NAVY }}
     >
-      {/* 배경 오버레이 — 시안 .bg (상하 웨이브) */}
+      {/* 배경 오버레이 — 상단 웨이브(top 고정) + 하단 웨이브(bottom 고정) */}
       <div
         aria-hidden="true"
         className="absolute inset-0 flex justify-center pointer-events-none"
       >
         <div
-          className="w-full max-w-[410px] h-full"
+          className="w-full max-w-[425px] h-full"
           style={{
-            backgroundImage: `url('${BASE_PATH}/bg-overlay-detail.png')`,
-            backgroundSize: "100% 100%",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
+            backgroundImage: `url('${BASE_PATH}/bg-detail-top.png'), url('${BASE_PATH}/bg-detail-bottom.png')`,
+            backgroundSize: "100% auto, 100% auto",
+            backgroundRepeat: "no-repeat, no-repeat",
+            backgroundPosition: "top center, bottom center",
           }}
         />
       </div>
@@ -217,14 +217,8 @@ export default async function TreatmentDetail({
 
         {/* 시안 .frame-3: 노트목록 + 푸터 라인 + 푸터 텍스트, gap-30 외부 간격 */}
         <div className="mt-[30px] w-full flex flex-col items-center gap-[30px]">
-          {/* 시안 .frame-4: 고정 높이 582.81 + space-between으로 노트와 분리선 펼침 */}
-          <div
-            className="w-full flex flex-col items-stretch"
-            style={{
-              minHeight: "582.81px",
-              justifyContent: "space-between",
-            }}
-          >
+          {/* 노트 목록 — 각 항목 사이 30px 고정 gap (보톡스 기준 동일 리듬) */}
+          <div className="w-full flex flex-col items-stretch gap-[30px]">
             {t.notes.map((note, idx) => (
               <div key={idx} className="contents">
                 <div className="flex items-start gap-[9px]">
@@ -235,6 +229,7 @@ export default async function TreatmentDetail({
                       fontFamily:
                         '"Newsreader", "Noto Serif KR", Georgia, serif',
                       fontWeight: 300,
+                      fontStyle: "italic",
                       fontSize: "25px",
                       lineHeight: "35px",
                       letterSpacing: "-1.75px",

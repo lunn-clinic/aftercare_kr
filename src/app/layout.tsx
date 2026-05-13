@@ -27,7 +27,7 @@ export default function RootLayout({
         />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;1,300;1,400&display=swap"
         />
       </head>
       <body className="min-h-full flex flex-col bg-white text-text-primary">
