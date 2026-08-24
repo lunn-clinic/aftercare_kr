@@ -217,6 +217,18 @@ export default async function TreatmentDetail({
 
         {/* 시안 .frame-3: 노트목록 + 푸터 라인 + 푸터 텍스트, gap-30 외부 간격 */}
         <div className="mt-[30px] w-full flex flex-col items-center gap-[30px]">
+          {t.intro ? (
+            <p
+              className="w-full text-center text-[13px] font-medium leading-[19.1px]"
+              style={{
+                letterSpacing: "-0.39px",
+                wordBreak: "keep-all",
+                color: "rgba(227,227,227,0.85)",
+              }}
+            >
+              {t.intro}
+            </p>
+          ) : null}
           {/* 노트 목록 — 각 항목 사이 30px 고정 gap (보톡스 기준 동일 리듬) */}
           <div className="w-full flex flex-col items-stretch gap-[30px]">
             {t.notes.map((note, idx) => (
