@@ -231,39 +231,75 @@ export default async function TreatmentDetail({
           ) : null}
           {/* 노트 목록 — 각 항목 사이 30px 고정 gap (보톡스 기준 동일 리듬) */}
           <div className="w-full flex flex-col items-stretch gap-[30px]">
-            {t.notes.map((note, idx) => (
-              <div key={idx} className="contents">
-                <div className="flex items-start gap-[9px]">
-                  <span
-                    aria-hidden="true"
-                    className="flex-shrink-0"
-                    style={{
-                      fontFamily:
-                        '"Newsreader", "Noto Serif KR", Georgia, serif',
-                      fontWeight: 300,
-                      fontStyle: "italic",
-                      fontSize: "25px",
-                      lineHeight: "35px",
-                      letterSpacing: "-1.75px",
-                      color: NUMBER_COLOR,
-                    }}
-                  >
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <p
-                    className="text-[14px] font-medium leading-[19.1px] flex-1 pt-[8px]"
-                    style={{
-                      letterSpacing: "-0.42px",
-                      wordBreak: "keep-all",
-                      color: NOTE_TEXT_COLOR,
-                    }}
-                  >
-                    {note}
-                  </p>
+            {t.notes.map((note, idx) => {
+              const text = typeof note === "string" ? note : note.text;
+              const caution = typeof note === "string" ? null : note.caution;
+              return (
+                <div key={idx} className="contents">
+                  <div className="flex items-start gap-[9px]">
+                    <span
+                      aria-hidden="true"
+                      className="flex-shrink-0"
+                      style={{
+                        fontFamily:
+                          '"Newsreader", "Noto Serif KR", Georgia, serif',
+                        fontWeight: 300,
+                        fontStyle: "italic",
+                        fontSize: "25px",
+                        lineHeight: "35px",
+                        letterSpacing: "-1.75px",
+                        color: NUMBER_COLOR,
+                      }}
+                    >
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <div className="flex-1 pt-[8px]">
+                      <p
+                        className="text-[14px] font-medium leading-[19.1px]"
+                        style={{
+                          letterSpacing: "-0.42px",
+                          wordBreak: "keep-all",
+                          color: NOTE_TEXT_COLOR,
+                        }}
+                      >
+                        {text}
+                      </p>
+                      {caution ? (
+                        <div
+                          className="mt-[10px] rounded-[4px] px-3 py-2.5"
+                          style={{
+                            backgroundColor: "rgba(255,255,255,0.06)",
+                            border: "0.5px solid rgba(162,197,210,0.55)",
+                          }}
+                        >
+                          <p
+                            className="text-[13px] font-semibold leading-[18px]"
+                            style={{
+                              letterSpacing: "-0.39px",
+                              wordBreak: "keep-all",
+                              color: "#A2C5D2",
+                            }}
+                          >
+                            ※ 주의
+                          </p>
+                          <p
+                            className="mt-[3px] text-[13px] font-medium leading-[18px]"
+                            style={{
+                              letterSpacing: "-0.39px",
+                              wordBreak: "keep-all",
+                              color: NOTE_TEXT_COLOR,
+                            }}
+                          >
+                            {caution}
+                          </p>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                  {idx < t.notes.length - 1 ? <NoteDivider /> : null}
                 </div>
-                {idx < t.notes.length - 1 ? <NoteDivider /> : null}
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         {/* 푸터 — 짧은 hairline + 안내문 (frame-3 children, gap-30 적용됨) */}

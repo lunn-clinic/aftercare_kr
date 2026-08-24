@@ -17,12 +17,14 @@ export const categoryNames: Record<CategoryKey, string> = {
   "pore-scar": "모공·흉터 레이저",
 };
 
+export type Note = string | { text: string; caution: string };
+
 export type Treatment = {
   slug: string;
   name: string;
   category: CategoryKey;
   intro?: string;
-  notes: string[];
+  notes: Note[];
 };
 
 export const treatments: Treatment[] = [
@@ -140,8 +142,11 @@ export const treatments: Treatment[] = [
       "시술 후 2~3일 정도는 가급적 화장 또는 자외선 차단제를 피해주세요.",
       "시술 후 2~3일 정도는 자외선 차단을 위해 모자나 마스크 착용이 필요합니다.",
       "상처가 완전히 아문 후에는 평소처럼 스킨케어와 자외선 차단제를 사용해도 됩니다.",
-      "시술 후 1~2주 동안은 기능성 화장품(예: 미백, 기미·잡티 제거, 여드름 개선 등의 기능성 성분이 들어간 제품)을 사용하지 마세요. 특정 스킨케어 브랜드와는 관계없이 성분을 기준으로 피하시면 됩니다.",
-      "주의: 일부 자외선 차단제에는 미백 성분이나 BB크림 성분이 첨가되어 있을 수 있으므로, 시술 후에는 반드시 피해주세요.",
+      {
+        text: "시술 후 1~2주 동안은 기능성 화장품(예: 미백, 기미·잡티 제거, 여드름 개선 등의 기능성 성분이 들어간 제품)을 사용하지 마세요. 특정 스킨케어 브랜드와는 관계없이 성분을 기준으로 피하시면 됩니다.",
+        caution:
+          "일부 자외선 차단제에는 미백 성분이나 BB크림 성분이 첨가되어 있을 수 있으므로, 시술 후에는 반드시 피해주세요.",
+      },
       "피부가 건조해져 가려움이 생기지 않도록 보습에 신경 써주세요.",
       "딱지가 생기더라도 절대로 직접 떼거나 문지르지 마세요. 자연스럽게 회복될 수 있도록 그대로 두시면 됩니다.",
     ],
